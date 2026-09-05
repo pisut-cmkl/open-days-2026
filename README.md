@@ -8,7 +8,7 @@ Fighters: **GREEN** vs **PINK** character sprites with idle / walk / jump / hit 
 
 ## Play
 
-GitHub Pages: https://wisessing.github.io/open-days-2026/
+GitHub Pages: https://pisut-cmkl.github.io/open-days-2026/
 
 ## Run locally
 
