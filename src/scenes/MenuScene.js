@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { PLAYERS } from '../config.js';
+import { addTouchButton } from '../ui/MobileControls.js';
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -38,52 +39,47 @@ export class MenuScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(width / 2, 155, 'Kenney sprites · Phaser 3 · Local 2P', {
+      .text(width / 2, 155, 'Kenney sprites · Phaser 3 · Local 2P · Touch OK', {
         fontFamily: 'Segoe UI, sans-serif',
         fontSize: '18px',
         color: '#2b4a6f',
       })
       .setOrigin(0.5);
 
-    this.createFighterCard(width / 2 - 220, 360, PLAYERS.p1, [
-      'Move  A / D',
-      'Jump  W',
-      'Attack  F',
-      'Fast-fall  S',
+    this.createFighterCard(width / 2 - 220, 340, PLAYERS.p1, [
+      'Move  A / D  or pad',
+      'Jump  W  or JUMP',
+      'Attack  F  or ATK',
+      'Fast-fall  S  or ▼',
     ]);
-    this.createFighterCard(width / 2 + 220, 360, PLAYERS.p2, [
-      'Move  ← / →',
-      'Jump  ↑',
-      'Attack  L',
-      'Fast-fall  ↓',
+    this.createFighterCard(width / 2 + 220, 340, PLAYERS.p2, [
+      'Move  ← / →  or pad',
+      'Jump  ↑  or JUMP',
+      'Attack  L  or ATK',
+      'Fast-fall  ↓  or ▼',
     ]);
 
     this.add
-      .text(width / 2, 560, '3 stocks · % damage · knockback KO', {
+      .text(width / 2, 520, '3 stocks · % damage · knockback KO', {
         fontFamily: 'Segoe UI, sans-serif',
         fontSize: '18px',
         color: '#2b4a6f',
       })
       .setOrigin(0.5);
 
-    const prompt = this.add
-      .text(width / 2, 620, 'Press SPACE or ENTER to start', {
+    addTouchButton(this, width / 2, 600, '▶  TAP TO START', () => this.startGame(), {
+      w: 320,
+      h: 68,
+      fill: 0x146c43,
+    });
+
+    this.add
+      .text(width / 2, 665, 'or press SPACE / ENTER', {
         fontFamily: 'Segoe UI, sans-serif',
-        fontSize: '28px',
-        fontStyle: 'bold',
-        color: '#146c43',
-        backgroundColor: '#ffffffcc',
-        padding: { x: 16, y: 8 },
+        fontSize: '16px',
+        color: '#2b4a6f',
       })
       .setOrigin(0.5);
-
-    this.tweens.add({
-      targets: prompt,
-      alpha: 0.45,
-      duration: 650,
-      yoyo: true,
-      repeat: -1,
-    });
 
     this.input.keyboard.once('keydown-SPACE', () => this.startGame());
     this.input.keyboard.once('keydown-ENTER', () => this.startGame());

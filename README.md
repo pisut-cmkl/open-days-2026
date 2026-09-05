@@ -21,13 +21,15 @@ Open the printed local URL (default `http://localhost:5173`).
 
 ## Controls
 
-| Action | P1 (Green) | P2 (Pink) |
-|--------|------------|-----------|
-| Move | A / D | ← / → |
-| Jump (double jump) | W | ↑ |
-| Attack | F | L |
-| Fast-fall | S | ↓ |
-| Pause / menu | Esc | Esc |
+| Action | P1 (Green) | P2 (Pink) | Touch overlay |
+|--------|------------|-----------|---------------|
+| Move | A / D | ← / → | ◀ ▶ pads |
+| Jump (double jump) | W | ↑ | JUMP |
+| Attack | F | L | ATK |
+| Fast-fall | S | ↓ | ▼ |
+| Pause / menu | Esc | Esc | MENU |
+
+On phones/tablets, dual on-screen pads are always shown (P1 left, P2 right). Multi-touch supported.
 
 ## Rules
 

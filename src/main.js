@@ -21,6 +21,11 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
+  input: {
+    activePointers: 6,
+    // Needed so multi-touch pads don't get swallowed by browser gestures
+    windowEvents: true,
+  },
   scene: [BootScene, MenuScene, GameScene, ResultScene],
 };
 

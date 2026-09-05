@@ -79,7 +79,26 @@ export class Fighter extends Phaser.Physics.Arcade.Sprite {
     this.alreadyHit = new Set();
 
     this.cursors = this.bindKeys(scene, config.keys);
-  }
+        /** Optional mobile pad state provider: () => ({left,right,jump,jumpPressed,attack,attackPressed,down}) */
+        this.virtualInput = null;
+      }
+
+      setVirtualInput(provider) {
+        this.virtualInput = provider;
+      }
+
+      readInput() {
+        const pad = this.virtualInput?.() ?? {};
+        return {
+          left: !!(this.cursors.left.isDown || pad.left),
+          right: !!(this.cursors.right.isDown || pad.right),
+          down: !!(this.cursors.down.isDown || pad.down),
+          jumpPressed:
+            Phaser.Input.Keyboard.JustDown(this.cursors.jump) || !!pad.jumpPressed,
+          attackPressed:
+            Phaser.Input.Keyboard.JustDown(this.cursors.attack) || !!pad.attackPressed,
+        };
+      }
 
   bindKeys(scene, keys) {
     return {
@@ -131,38 +150,37 @@ export class Fighter extends Phaser.Physics.Arcade.Sprite {
   }
 
   handleInput(time) {
-    if (this.isHitstunned || this.isDead) return;
+      if (this.isHitstunned || this.isDead) return;
 
-    const onFloor = this.body.blocked.down || this.body.touching.down;
-    const left = this.cursors.left.isDown;
-    const right = this.cursors.right.isDown;
-    const speed = onFloor ? FIGHTER.moveSpeed : FIGHTER.airSpeed;
+      const onFloor = this.body.blocked.down || this.body.touching.down;
+      const input = this.readInput();
+      const speed = onFloor ? FIGHTER.moveSpeed : FIGHTER.airSpeed;
 
-    if (left && !right) {
-      this.setVelocityX(-speed);
-      this.facing = -1;
-      this.setFlipX(true);
-    } else if (right && !left) {
-      this.setVelocityX(speed);
-      this.facing = 1;
-      this.setFlipX(false);
+      if (input.left && !input.right) {
+        this.setVelocityX(-speed);
+        this.facing = -1;
+        this.setFlipX(true);
+      } else if (input.right && !input.left) {
+        this.setVelocityX(speed);
+        this.facing = 1;
+        this.setFlipX(false);
+      }
+
+      if (input.jumpPressed && this.jumpsLeft > 0) {
+        const isDouble = this.jumpsLeft < FIGHTER.maxJumps || !onFloor;
+        this.setVelocityY(isDouble ? FIGHTER.doubleJumpVelocity : FIGHTER.jumpVelocity);
+        this.jumpsLeft -= 1;
+        this.scene.sound.play(isDouble ? 'sfx-jump-high' : 'sfx-jump', { volume: 0.35 });
+      }
+
+      if (input.down && !onFloor && this.body.velocity.y > -50) {
+        this.setVelocityY(Math.max(this.body.velocity.y, 900));
+      }
+
+      if (input.attackPressed && this.canAttack && !this.isAttacking) {
+        this.startAttack(time);
+      }
     }
-
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.jump) && this.jumpsLeft > 0) {
-      const isDouble = this.jumpsLeft < FIGHTER.maxJumps || !onFloor;
-      this.setVelocityY(isDouble ? FIGHTER.doubleJumpVelocity : FIGHTER.jumpVelocity);
-      this.jumpsLeft -= 1;
-      this.scene.sound.play(isDouble ? 'sfx-jump-high' : 'sfx-jump', { volume: 0.35 });
-    }
-
-    if (this.cursors.down.isDown && !onFloor && this.body.velocity.y > -50) {
-      this.setVelocityY(Math.max(this.body.velocity.y, 900));
-    }
-
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.attack) && this.canAttack && !this.isAttacking) {
-      this.startAttack(time);
-    }
-  }
 
   updateAnimation() {
     if (this.isHitstunned) {

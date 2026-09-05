@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { addTouchButton } from '../ui/MobileControls.js';
 
 export class ResultScene extends Phaser.Scene {
   constructor() {
@@ -24,7 +25,7 @@ export class ResultScene extends Phaser.Scene {
     }
 
     this.add
-      .text(width / 2, 140, 'MATCH OVER', {
+      .text(width / 2, 120, 'MATCH OVER', {
         fontFamily: 'Segoe UI, sans-serif',
         fontSize: '28px',
         color: '#8fa3c8',
@@ -32,12 +33,12 @@ export class ResultScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const winner = this.add
-      .sprite(width / 2, 280, 'characters', `character_${this.result.winnerSkin}_jump`)
-      .setScale(1.6);
+      .sprite(width / 2, 250, 'characters', `character_${this.result.winnerSkin}_jump`)
+      .setScale(1.5);
     winner.play(`${this.result.winnerSkin}-idle`);
 
     this.add
-      .text(width / 2, 390, `${this.result.winnerName} WINS`, {
+      .text(width / 2, 360, `${this.result.winnerName} WINS`, {
         fontFamily: 'Segoe UI, sans-serif',
         fontSize: '56px',
         fontStyle: 'bold',
@@ -50,7 +51,7 @@ export class ResultScene extends Phaser.Scene {
     this.add
       .text(
         width / 2,
-        460,
+        430,
         `Stocks left — GREEN ${this.result.p1Stocks}  ·  PINK ${this.result.p2Stocks}`,
         {
           fontFamily: 'Segoe UI, sans-serif',
@@ -60,21 +61,24 @@ export class ResultScene extends Phaser.Scene {
       )
       .setOrigin(0.5);
 
-    const prompt = this.add
-      .text(width / 2, 560, 'SPACE / ENTER  rematch    ESC  menu', {
+    addTouchButton(this, width / 2 - 160, 540, 'REMATCH', () => this.scene.start('GameScene'), {
+      w: 240,
+      h: 64,
+      fill: 0x146c43,
+    });
+    addTouchButton(this, width / 2 + 160, 540, 'MENU', () => this.scene.start('MenuScene'), {
+      w: 240,
+      h: 64,
+      fill: 0x1a2740,
+    });
+
+    this.add
+      .text(width / 2, 620, 'Keyboard: SPACE rematch · ESC menu', {
         fontFamily: 'Segoe UI, sans-serif',
-        fontSize: '24px',
-        color: '#7ef0c0',
+        fontSize: '16px',
+        color: '#8fa3c8',
       })
       .setOrigin(0.5);
-
-    this.tweens.add({
-      targets: prompt,
-      alpha: 0.4,
-      duration: 700,
-      yoyo: true,
-      repeat: -1,
-    });
 
     this.sound.play('sfx-select', { volume: 0.35 });
 

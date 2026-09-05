@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { BLAST, GAME, PLAYERS, STAGE, TILE } from '../config.js';
 import { Fighter } from '../entities/Fighter.js';
+import { MobileControls } from '../ui/MobileControls.js';
 
 export class GameScene extends Phaser.Scene {
   constructor() {
@@ -17,6 +18,7 @@ export class GameScene extends Phaser.Scene {
     this.createFighters();
     this.createHud();
     this.createCollisions();
+    this.createMobileControls();
 
     this.add
       .text(GAME.width / 2, 28, 'KO if you leave the blast zone', {
@@ -30,8 +32,15 @@ export class GameScene extends Phaser.Scene {
       .setDepth(30);
 
     this.input.keyboard.on('keydown-ESC', () => {
+      this.mobileControls?.releaseAll();
       this.scene.start('MenuScene');
     });
+  }
+
+  createMobileControls() {
+    this.mobileControls = new MobileControls(this);
+    this.p1.setVirtualInput(() => this.mobileControls.getPlayerState('p1'));
+    this.p2.setVirtualInput(() => this.mobileControls.getPlayerState('p2'));
   }
 
   createBackground() {
@@ -237,10 +246,10 @@ export class GameScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.matchOver) return;
-    this.updateHud();
-    this.checkBlastZones();
-  }
+      if (this.matchOver) return;
+      this.updateHud();
+      this.checkBlastZones();
+    }
 
   updateHud() {
     this.hud.p1Stock.setText(this.stockText(this.p1));
